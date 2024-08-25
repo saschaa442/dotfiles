@@ -1,0 +1,25 @@
+# This is Git's per-user configuration file.
+[user]
+  name = setme
+  email = setme
+
+[pull]
+  rebase = true
+
+[core]
+  editor = nvim
+  eol = lf
+  excludeFiles = ~/.config/.gitignore
+
+[rebase]
+  autoStash = true
+
+[fetch]
+  prune = true
+
+[merge]
+  conflictStyle = diff3
+
+[rerere]
+  enabled = true
+  autoUpdate = true
