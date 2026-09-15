@@ -1,0 +1,10 @@
+# Herdr — managed from ~/.dotfiles
+
+onboarding = false
+
+[keys]
+# tmux-compatible prefix bindings.
+prefix = "ctrl+b"
+split_vertical = "prefix+%"
+split_horizontal = 'prefix+"'
+rename_tab = "prefix+comma"

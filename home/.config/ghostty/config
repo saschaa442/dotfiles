@@ -1,0 +1,20 @@
+# Ghostty — managed from ~/.dotfiles
+
+# Aesthetics
+theme = Catppuccin Mocha
+background-opacity = 0.85
+background-blur = 16
+macos-titlebar-style = hidden
+# Close tabs and windows immediately, without a confirmation prompt.
+confirm-close-surface = false
+
+# Typography — change these values to tune every Ghostty window.
+# `font-family` must match an installed macOS font family exactly.
+font-family = FiraCode Nerd Font Mono
+font-style = Bold
+# Default text size in points.
+font-size = 16
+# Use the font's native Bold weight without additional thickening.
+font-thicken = false
+# Add a little vertical breathing room between terminal rows.
+adjust-cell-height = 1

@@ -1,0 +1,62 @@
+#!/bin/sh
+
+# Keep SMB shares available through stable paths below ~/mounts. NetFS uses
+# the same Keychain credentials as Finder, so no password lives in this file.
+
+set -u
+
+server=192.168.2.237
+mount_root="$HOME/mounts"
+
+mkdir -p "$mount_root"
+
+# Do not call NetFS at all while the NAS is unavailable. This prevents macOS
+# from showing its "problem connecting to the server" dialog after wake or
+# while away from the home network.
+if ! /usr/bin/nc -z -G 2 "$server" 445 >/dev/null 2>&1; then
+  exit 0
+fi
+
+mount_share() {
+  share=$1
+  stable_name=$2
+  stable_path="$mount_root/$stable_name"
+  default_volume_path="/Volumes/$share"
+
+  # Migrate an empty mountpoint from the direct-mount implementation. rmdir
+  # deliberately fails rather than touching a directory containing data.
+  if [ -d "$stable_path" ] && [ ! -L "$stable_path" ]; then
+    rmdir "$stable_path" 2>/dev/null || return
+  fi
+
+  if [ ! -e "$stable_path" ] && [ ! -L "$stable_path" ]; then
+    ln -s "$default_volume_path" "$stable_path"
+  elif [ ! -L "$stable_path" ]; then
+    return
+  fi
+
+  mounted_path=$(
+    /usr/bin/osascript \
+      -e 'on run argv' \
+      -e 'try' \
+      -e 'with timeout of 15 seconds' \
+      -e 'set mountedVolume to mount volume ("smb://" & item 1 of argv & "/" & item 2 of argv)' \
+      -e 'return POSIX path of mountedVolume' \
+      -e 'end timeout' \
+      -e 'on error' \
+      -e 'return ""' \
+      -e 'end try' \
+      -e 'end run' \
+      "$server" "$share" 2>/dev/null
+  )
+
+  # NetFS may append a number if /Volumes/<share> is already occupied.
+  if [ -n "$mounted_path" ] && [ -d "$mounted_path" ]; then
+    ln -sfn "$mounted_path" "$stable_path"
+  fi
+}
+
+mount_share sascha personal
+mount_share media media
+
+exit 0

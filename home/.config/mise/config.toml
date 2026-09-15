@@ -1,0 +1,6 @@
+# mise — managed from ~/.dotfiles
+#
+# Projects can override this global default with their own mise.toml.
+
+[tools]
+node = "lts"

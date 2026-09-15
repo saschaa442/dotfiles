@@ -1,0 +1,12 @@
+.DS_Store
+
+# Never version private SSH identities or local backup material.
+**/id_rsa
+**/id_ed25519
+**/id_ecdsa
+**/homelab
+*.pem
+*.key
+.env
+.env.*
+.dotfiles-backup/
